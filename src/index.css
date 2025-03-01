@@ -93,9 +93,9 @@ ul li::before {
   margin-right: 0.5rem;
 }
 
-.list input[type="checkbox"]:focus + label {
+/*.list input[type="checkbox"]:focus + label {
   text-decoration: underline;
-}
+}*/
 
 .list > label {
   font-size: 0.75rem;
@@ -185,4 +185,8 @@ button:hover {
 }
 .cut{
   text-decoration: line-through;
+}
+
+.para{
+  margin-top: 10 rem;
 }
