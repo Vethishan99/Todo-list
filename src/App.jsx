@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import "./App.css";
-import Content from "./assets/content";
-import Header from "./assets/header";
-import Footer from "./assets/Footer";
+import Content from "./Content";
+import Header from "./Header";
+import Footer from "./Footer";
+import AddItem from "./AddItem";
 
 function App() {
   const [items, setItems] = useState([
@@ -10,6 +11,14 @@ function App() {
     { id: 2, checked: false, name: "Play cricket" },
     { id: 3, checked: false, name: "Read about AI" },
   ]);
+  const addItem = (item) => {
+    const id = items.length ? items[items.length - 1].id + 1 : 1;
+    const addNewItem = { id, checked: false, name: item };
+    const listItems = [...items, addNewItem];
+    setItems(listItems);
+    localStorage.setList("todo_list", JSON.stringify(listItems));
+  };
+  const [newItem, setNewItem] = useState("");
   const handleCheck = (id) => {
     const listItems = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
@@ -22,10 +31,22 @@ function App() {
     setItems(deleteItems);
     localStorage.setList("todo_list", JSON.stringify(listItems));
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!newItem) return;
+    console.log(newItem);
+    setNewItem("");
+    addItem(newItem);
+  };
 
   return (
     <>
       <Header />
+      <AddItem
+        newItem={newItem}
+        setNewItem={setNewItem}
+        handleSubmit={handleSubmit}
+      />
       <Content
         items={items}
         handleCheck={handleCheck}
