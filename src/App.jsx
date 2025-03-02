@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import Content from "./Content";
 import Header from "./Header";
@@ -6,11 +6,9 @@ import Footer from "./Footer";
 import AddItem from "./AddItem";
 
 function App() {
-  const [items, setItems] = useState([
-    { id: 1, checked: true, name: "Learn coding" },
-    { id: 2, checked: false, name: "Play cricket" },
-    { id: 3, checked: false, name: "Read about AI" },
-  ]);
+  const [items, setItems] = useState(
+    JSON.parse(localStorage.getItem("todo_list") || "[]")
+  );
   const addItem = (item) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
     const addNewItem = { id, checked: false, name: item };
