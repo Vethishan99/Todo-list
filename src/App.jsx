@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { use, useEffect, useState, useSyncExternalStore } from "react";
 import "./App.css";
 import Content from "./Content";
 import Header from "./Header";
 import Footer from "./Footer";
 import AddItem from "./AddItem";
+import SearchItem from "./SearchItem";
 
 function App() {
-  const [items, setItems] = useState(
-    JSON.parse(localStorage.getItem("todo_list")) || []
-  );
+  const API_URL = "http://localhost:3500/items";
+  const [items, setItems] = useState([]);
+  const [search, setSearch] = useState("");
+  const [newItem, setNewItem] = useState("");
 
   const addItem = (item) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
@@ -18,7 +20,20 @@ function App() {
     localStorage.setItem("todo_list", JSON.stringify(listItems));
   };
 
-  const [newItem, setNewItem] = useState("");
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+        console.log(response);
+        const listItems = await response.json;
+        console.log(listItems);
+        setItems(listItems);
+      } catch (err) {
+        console.log(err.stack);
+      }
+    };
+    (async () => await fetchItems())();
+  }, []);
 
   const handleCheck = (id) => {
     const listItems = items.map((item) =>
@@ -49,8 +64,11 @@ function App() {
         setNewItem={setNewItem}
         handleSubmit={handleSubmit}
       />
+      <SearchItem search={search} setSearch={setSearch} />
       <Content
-        items={items}
+        items={items.filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        )}
         handleCheck={handleCheck}
         handleDelete={handleDelete}
       />
