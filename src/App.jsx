@@ -1,4 +1,4 @@
-import { use, useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import "./App.css";
 import Content from "./Content";
 import Header from "./Header";
@@ -11,28 +11,34 @@ function App() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
   const [newItem, setNewItem] = useState("");
+  const [fetchError, setFetchError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const addItem = (item) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
     const addNewItem = { id, checked: false, name: item };
     const listItems = [...items, addNewItem];
     setItems(listItems);
-    localStorage.setItem("todo_list", JSON.stringify(listItems));
   };
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await fetch(API_URL);
-        console.log(response);
-        const listItems = await response.json;
+        if (!response.ok) throw Error("Data not received");
+        const listItems = await response.json();
         console.log(listItems);
         setItems(listItems);
+        setFetchError(null);
       } catch (err) {
-        console.log(err.stack);
+        setFetchError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
-    (async () => await fetchItems())();
+    setTimeout(() => {
+      (async () => await fetchItems())();
+    }, 2000);
   }, []);
 
   const handleCheck = (id) => {
@@ -40,13 +46,11 @@ function App() {
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setItems(listItems);
-    localStorage.setItem("todo_list", JSON.stringify(listItems));
   };
 
   const handleDelete = (id) => {
     const deleteItems = items.filter((item) => item.id !== id);
     setItems(deleteItems);
-    localStorage.setItem("todo_list", JSON.stringify(deleteItems));
   };
 
   const handleSubmit = (e) => {
@@ -65,13 +69,21 @@ function App() {
         handleSubmit={handleSubmit}
       />
       <SearchItem search={search} setSearch={setSearch} />
-      <Content
-        items={items.filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
+      <main>
+        {loading && <p>Loading Items..</p>}
+        {fetchError && <p>{`Error: ${fetchError}`}</p>}
+        {!loading && !fetchError && (
+          <Content
+            items={items.filter(
+              (item) =>
+                item.name &&
+                item.name.toLowerCase().includes(search.toLowerCase())
+            )}
+            handleCheck={handleCheck}
+            handleDelete={handleDelete}
+          />
         )}
-        handleCheck={handleCheck}
-        handleDelete={handleDelete}
-      />
+      </main>
       <Footer length={items.length} />
     </>
   );

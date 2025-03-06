@@ -3,17 +3,17 @@
         {
             "id":1,
             "checked":false,
-            "item":"visit uom.lk"
+            "name":"visit uom.lk"
         },
         {
             "id":2,
             "checked":true,
-            "item":"Blockchain"
+            "name":"Blockchain"
         },
         {
             "id":3,
             "checked":false,
-            "item":"AI"
+            "name":"AI"
         }
     ]
 }
