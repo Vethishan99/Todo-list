@@ -1,19 +1,14 @@
 {
-    "items":[
-        {
-            "id":1,
-            "checked":false,
-            "name":"visit uom.lk"
-        },
-        {
-            "id":2,
-            "checked":true,
-            "name":"Blockchain"
-        },
-        {
-            "id":3,
-            "checked":false,
-            "name":"AI"
-        }
-    ]
+  "items": [
+    {
+      "id": "21",
+      "checked": false,
+      "name": "AI"
+    },
+    {
+      "id": "211",
+      "checked": false,
+      "name": "Machine Learning "
+    }
+  ]
 }
